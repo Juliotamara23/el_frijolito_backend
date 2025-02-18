@@ -1,0 +1,43 @@
+# Archivos de caché de Python
+__pycache__/
+app/__pycache__/
+api/__pycache__/
+core/__pycache__/
+db/__pycache__/
+alembic/__pycache__/
+
+# Archivos de configuración local
+.env
+alembic.ini  # Si no quieres compartir la configuración de Alembic
+
+# Entornos virtuales
+venv/  # Si tienes un entorno virtual
+.venv/ # Otro directorio común para entornos virtuales
+
+# Archivos de bytecode de Python (opcional, ya que __pycache__ los incluye)
+*.pyc
+
+# Archivos y directorios del sistema
+.DS_Store  # Archivos de macOS
+Thumbs.db  # Archivos de Windows
+
+# Logs y archivos temporales
+*.log
+tmp/
+temp/
+
+# Dependencias y paquetes (si no quieres incluirlos en el repo)
+.idea/  # Si usas IntelliJ IDEA
+.vscode/  # Si usas VS Code
+
+# Archivos específicos que no quieres subir
+# (ej: contraseñas, claves, etc.)
+
+# Base de datos SQLite (si usas SQLite y no quieres compartirla)
+# instance/  # Carpeta por defecto para la base de datos en Flask
+
+# Archivos de Docker (si usas Docker)
+.dockerignore
+
+# Archivos de requirements (opcional, pero no es mala idea ignorarlos)
+requirements.txt
