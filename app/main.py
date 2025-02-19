@@ -1,17 +1,11 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from .core.config import SessionLocal
+from .api.endpoints.api import api_router
+from app.db.database import get_db
 
-app = FastAPI()
-
-# Dependencia para obtener la sesión de la base de datos
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app = FastAPI(title="API de Nómina Tu Casa Ya")
+app.include_router(api_router)
 
 @app.get("/")
 def read_root(db: Session = Depends(get_db)):
-    return {"message": "Conexión exitosa"}
+    return {"message": "Bienvenido a la API de Nómina Tu Casa Ya"}

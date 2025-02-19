@@ -30,8 +30,6 @@ class ConfigSalario(Base):
     horas_mes = Column(Integer, nullable=False)
     valor_hora = Column(Numeric(10, 2), nullable=False)
 
-    reporte_nomina = relationship("ReporteNomina", back_populates="config_salario")
-
 # Modelo de tipo de recargos
 class TipoRecargo(Base):
     __tablename__ = 'tipo_recargos'
@@ -76,7 +74,6 @@ class ReporteNomina(Base):
     total_pagado = Column(Numeric(10, 2), nullable=False)
 
     empleado = relationship("Empleado", back_populates="reporte_nominas")
-    config_salario = relationship("ConfigSalario", back_populates="reporte_nomina")
     quincena_valores = relationship("QuincenaValor", back_populates="reporte_nomina")
     reporte_nomina_recargos = relationship("ReporteNominaRecargo", back_populates="reporte_nomina")
     reporte_nomina_descuentos = relationship("ReporteNominaDescuento", back_populates="reporte_nomina")

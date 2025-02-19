@@ -6,11 +6,11 @@ from uuid import UUID
 
 # Esquema para la tabla empleados
 class EmpleadoBase(BaseModel):
-    cedula: Annotated[str, constr(min_length=10, max_length=10, regex=r'^\d{10}$')]  # Validación de longitud y formato
-    nombres: Annotated[str, constr(min_length=1, max_length=100)]
-    apellidos: Annotated[str, constr(min_length=1, max_length=100)]
-    telefono: Optional[Annotated[str, constr(min_length=7, max_length=15, regex=r'^\+?\d{7,15}$')]] = None  # Validación de formato
-    puesto_trabajo: Optional[Annotated[str, constr(min_length=1, max_length=100)]] = None
+    cedula: Annotated[str, Field(min_length=10, max_length=10, pattern=r'^\d{10}$')]  # Validación de longitud y formato
+    nombres: Annotated[str, Field(min_length=1, max_length=100)]
+    apellidos: Annotated[str, Field(min_length=1, max_length=100)]
+    telefono: Optional[Annotated[str, Field(min_length=7, max_length=15, pattern=r'^\+?\d{7,15}$')]] = None  # Validación de formato
+    puesto_trabajo: Optional[Annotated[str, Field(min_length=1, max_length=100)]] = None
     salario_base: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
 
 class EmpleadoCreate(EmpleadoBase):
@@ -24,7 +24,7 @@ class Empleado(EmpleadoBase):
 
 # Esquema para la tabla config_salario
 class ConfigSalarioBase(BaseModel):
-    año: Annotated[str, constr(min_length=4, max_length=4, regex=r'^\d{4}$')]  # Validación de formato de año
+    año: str  # Validación de formato de año
     salario_minimo: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
     horas_semana: Annotated[int, conint(ge=0, le=168)]  # Validación de rango (máximo 168 horas en una semana)
     horas_mes: Annotated[int, conint(ge=0, le=744)]  # Validación de rango (máximo 744 horas en un mes)
