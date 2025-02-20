@@ -11,9 +11,15 @@ class EmpleadoBase(BaseModel):
     apellidos: Annotated[str, Field(min_length=1, max_length=100)]
     telefono: Optional[Annotated[str, Field(min_length=7, max_length=15, pattern=r'^\+?\d{7,15}$')]] = None  # Validación de formato
     puesto_trabajo: Optional[Annotated[str, Field(min_length=1, max_length=100)]] = None
-    salario_base: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    salario_base: Annotated[Decimal, Field(max_digits=20, decimal_places=2, ge=0)]  # Validación de rango
 
 class EmpleadoCreate(EmpleadoBase):
+    pass
+
+class EmpleadoUpdate(EmpleadoBase):
+    pass
+
+class EmpleadoDelete(EmpleadoBase):
     pass
 
 class Empleado(EmpleadoBase):

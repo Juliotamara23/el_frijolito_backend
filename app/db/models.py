@@ -65,7 +65,7 @@ class TipoDescuento(Base):
 
 # Modelo de Nomina
 class ReporteNomina(Base):
-    __tablename__ = 'reporte_nominas'
+    __tablename__ = 'reportes_nominas'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     empleado_id = Column(UUID(as_uuid=True), ForeignKey('empleados.id'), nullable=False)
