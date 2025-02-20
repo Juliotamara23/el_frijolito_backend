@@ -42,11 +42,11 @@ def actualizar_empleado(empleado_id: UUID, empleado: schemas.EmpleadoUpdate, db:
     return db_empleado
 
 # Ruta para eliminar un empleado
-@router.delete("/{empleado_id}", status_code=204)
+@router.delete("/{empleado_id}", response_model=schemas.Empleado)
 def eliminar_empleado(empleado_id: UUID, db: Session = Depends(get_db)):
     db_empleado = db.query(models.Empleado).filter(models.Empleado.id == empleado_id).first()
     if db_empleado is None:
         raise HTTPException(status_code=404, detail="Empleado no encontrado")
     db.delete(db_empleado)
     db.commit()
-    return None
+    return {"message": "Empleado eliminado exitosamente", "empleado": db_empleado}

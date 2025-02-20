@@ -8,7 +8,8 @@ alembic/__pycache__/
 
 # Archivos de configuración local
 .env
-alembic.ini  # Si no quieres compartir la configuración de Alembic
+alembic.ini
+migrationDB.txt
 
 # Entornos virtuales
 venv/  # Si tienes un entorno virtual
