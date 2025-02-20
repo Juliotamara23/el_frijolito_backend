@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from .api.endpoints.api import api_router
+from .api.routes.api import api_router
 from app.db.database import get_db
 
 app = FastAPI(title="API de Nómina Tu Casa Ya")

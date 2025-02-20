@@ -89,33 +89,36 @@ class TipoDescuento(TipoDescuentoBase):
     class Config:
         from_attributes: True
 
-# Esquema para la tabla reporte_nomina
-class ReporteNominaBase(BaseModel):
-    empleado_id: UUID
-    fecha_inicio: date
-    fecha_fin: date
-    total_pagado: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
-
-class ReporteNominaCreate(ReporteNominaBase):
-    pass
-
-class ReporteNomina(ReporteNominaBase):
-    id: UUID
-
-    class Config:
-        from_attributes: True
-
 # Esquema para la tabla quincena_valores
 class QuincenaValorBase(BaseModel):
-    reporte_nomina_id: UUID
     tipo_recargo_id: int
     cantidad_dias: Annotated[int, conint(ge=0, le=31)]  # Validación de rango (máximo 31 días en un mes)
-    valor_quincena: Annotated[Decimal, condecimal(max_digits=10, decimal_places=2), Field(strict=True, ge=0)]  # Validación de rango
+    valor_quincena: Annotated[Decimal, condecimal(max_digits=10, decimal_places=2), Field(strict=False, ge=0)]  # Validación de rango
 
 class QuincenaValorCreate(QuincenaValorBase):
     pass
 
 class QuincenaValor(QuincenaValorBase):
+    id: UUID
+    reporte_nomina_id: UUID
+
+    class Config:
+        from_attributes: True
+
+# Esquema para la tabla reporte_nomina
+class ReporteNominaBase(BaseModel):
+    empleado_id: UUID
+    fecha_inicio: date
+    fecha_fin: date
+    total_pagado: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
+
+class ReporteNominaCreate(ReporteNominaBase):
+    quincena_valores: list[QuincenaValorCreate]
+    recargos: list[int]
+    descuentos: list[int]
+    subsidios: list[int]
+
+class ReporteNomina(ReporteNominaBase):
     id: UUID
 
     class Config:
