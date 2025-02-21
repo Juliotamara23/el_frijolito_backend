@@ -81,9 +81,12 @@ class TipoSubsidio(TipoSubsidioBase):
 # Esquema para la tabla tipo_descuentos
 class TipoDescuentoBase(BaseModel):
     tipo: Annotated[str, constr(min_length=1, max_length=100)]
-    valor: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    valor: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
 
 class TipoDescuentoCreate(TipoDescuentoBase):
+    pass
+
+class TipoDescuentoUpdate(TipoDescuentoBase):
     pass
 
 class TipoDescuento(TipoDescuentoBase):

@@ -42,7 +42,7 @@ def actualizar_empleado(empleado_id: UUID, empleado: schemas.EmpleadoUpdate, db:
     return db_empleado
 
 # Ruta para eliminar un empleado
-@router.delete("/{empleado_id}", response_model=schemas.Empleado)
+@router.delete("/{empleado_id}")
 def eliminar_empleado(empleado_id: UUID, db: Session = Depends(get_db)):
     db_empleado = db.query(models.Empleado).filter(models.Empleado.id == empleado_id).first()
     if db_empleado is None:
