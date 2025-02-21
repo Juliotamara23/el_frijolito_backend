@@ -48,8 +48,8 @@ class ConfigSalario(ConfigSalarioBase):
 # Esquema para la tabla tipo_recargos
 class TipoRecargoBase(BaseModel):
     tipo_hora: Annotated[str, constr(min_length=1, max_length=100)]
-    porcentaje: Annotated[Decimal, Field(max_digits=5, decimal_places=4, strict=True, ge=0, le=2)]  # Validación de rango (0-1)
-    valor_hora: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    porcentaje: Annotated[Decimal, Field(max_digits=5, decimal_places=4, strict=False, ge=0, le=2)]  # Validación de rango (0-1)
+    valor_hora: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
     detalle: Optional[Annotated[str, constr(max_length=255)]] = None
 
 class TipoRecargoCreate(TipoRecargoBase):
@@ -64,7 +64,7 @@ class TipoRecargo(TipoRecargoBase):
 # Esquema para la tabla tipo_subsidios
 class TipoSubsidioBase(BaseModel):
     tipo: Annotated[str, constr(min_length=1, max_length=100)]
-    valor: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    valor: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
 
 class TipoSubsidioCreate(TipoSubsidioBase):
     pass
