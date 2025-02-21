@@ -165,3 +165,23 @@ class ReporteNominaSubsidio(ReporteNominaSubsidioBase):
 
     class Config:
         from_attributes: True
+
+# Esquema para actualizar una nómina
+class ReporteNominaUpdate(BaseModel):
+    fecha_inicio: Optional[date] = None
+    fecha_fin: Optional[date] = None
+    total_pagado: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = None
+    quincena_valores: Optional[list[QuincenaValorCreate]] = None
+    recargos: Optional[list[int]] = None
+    descuentos: Optional[list[int]] = None
+    subsidios: Optional[list[int]] = None
+
+    class Config:
+        from_attributes = True
+
+# Esquema para eliminar una nómina
+class ReporteNominaDelete(BaseModel):
+    id: UUID
+
+    class Config:
+        from_attributes = True
