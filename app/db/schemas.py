@@ -19,9 +19,6 @@ class EmpleadoCreate(EmpleadoBase):
 class EmpleadoUpdate(EmpleadoBase):
     pass
 
-class EmpleadoDelete(EmpleadoBase):
-    pass
-
 class Empleado(EmpleadoBase):
     id: UUID
 
