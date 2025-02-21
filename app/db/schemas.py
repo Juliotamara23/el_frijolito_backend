@@ -119,7 +119,7 @@ class ReporteNominaCreate(ReporteNominaBase):
     quincena_valores: list[QuincenaValorCreate]
     recargos: list[int]
     descuentos: list[int]
-    subsidios: list[int]
+    subsidios: Optional[list[int]] = None
 
 class ReporteNomina(ReporteNominaBase):
     id: UUID

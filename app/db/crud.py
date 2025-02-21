@@ -8,39 +8,44 @@ def crear_reporte_nomina(db: Session, nomina_data: ReporteNominaCreate):
     """Crea un reporte de nómina y sus registros relacionados en una transacción."""
     try:
         nueva_nomina = ReporteNomina(
-            empleado_id=nomina_data.empleado_id,
-            fecha_inicio=nomina_data.fecha_inicio,
-            fecha_fin=nomina_data.fecha_fin,
-            total_pagado=nomina_data.total_pagado
+            empleado_id = nomina_data.empleado_id,
+            fecha_inicio = nomina_data.fecha_inicio,
+            fecha_fin = nomina_data.fecha_fin,
+            total_pagado = nomina_data.total_pagado
         )
         db.add(nueva_nomina)
         db.flush()
 
+        # Agregar quincena_valores
         for valor in nomina_data.quincena_valores:
             db.add(QuincenaValor(
-                reporte_nomina_id=nueva_nomina.id,
-                tipo_recargo_id=valor.tipo_recargo_id,
-                cantidad_dias=valor.cantidad_dias,
-                valor_quincena=valor.valor_quincena
+                reporte_nomina_id = nueva_nomina.id,
+                tipo_recargo_id = valor.tipo_recargo_id,
+                cantidad_dias = valor.cantidad_dias,
+                valor_quincena = valor.valor_quincena
             ))
-
+        
+        # Agregar recargos
         for recargo_id in nomina_data.recargos:
             db.add(ReporteNominaRecargo(
-                reporte_nomina_id=nueva_nomina.id,
-                tipo_recargo_id=recargo_id
+                reporte_nomina_id = nueva_nomina.id,
+                tipo_recargo_id = recargo_id
             ))
 
+        # Agregar descuentos
         for descuento_id in nomina_data.descuentos:
             db.add(ReporteNominaDescuento(
-                reporte_nomina_id=nueva_nomina.id,
-                tipo_descuento_id=descuento_id
+                reporte_nomina_id = nueva_nomina.id,
+                tipo_descuento_id = descuento_id
             ))
 
-        for subsidio_id in nomina_data.subsidios:
-            db.add(ReporteNominaSubsidio(
-                reporte_nomina_id=nueva_nomina.id,
-                tipo_subsidio_id=subsidio_id
-            ))
+        # Agregar subsidios solo si existen
+        if nomina_data.subsidios:
+            for subsidio_id in nomina_data.subsidios:
+                db.add(ReporteNominaSubsidio(
+                    reporte_nomina_id = nueva_nomina.id,
+                    tipo_subsidio_id = subsidio_id
+                ))
 
         db.commit()
         db.refresh(nueva_nomina)
@@ -73,10 +78,10 @@ def actualizar_reporte_nomina(db: Session, nomina_id: UUID, nomina_data: Reporte
             # Agregar nuevos valores
             for valor in nomina_data.quincena_valores:
                 db.add(QuincenaValor(
-                    reporte_nomina_id=nomina_id,
-                    tipo_recargo_id=valor.tipo_recargo_id,
-                    cantidad_dias=valor.cantidad_dias,
-                    valor_quincena=valor.valor_quincena
+                    reporte_nomina_id = nomina_id,
+                    tipo_recargo_id = valor.tipo_recargo_id,
+                    cantidad_dias = valor.cantidad_dias,
+                    valor_quincena = valor.valor_quincena
                 ))
 
         # Actualizar recargos si se proporcionan
@@ -86,8 +91,8 @@ def actualizar_reporte_nomina(db: Session, nomina_id: UUID, nomina_data: Reporte
             # Agregar nuevos recargos
             for recargo_id in nomina_data.recargos:
                 db.add(ReporteNominaRecargo(
-                    reporte_nomina_id=nomina_id,
-                    tipo_recargo_id=recargo_id
+                    reporte_nomina_id = nomina_id,
+                    tipo_recargo_id = recargo_id
                 ))
 
         # Actualizar descuentos si se proporcionan
@@ -97,20 +102,23 @@ def actualizar_reporte_nomina(db: Session, nomina_id: UUID, nomina_data: Reporte
             # Agregar nuevos descuentos
             for descuento_id in nomina_data.descuentos:
                 db.add(ReporteNominaDescuento(
-                    reporte_nomina_id=nomina_id,
-                    tipo_descuento_id=descuento_id
+                    reporte_nomina_id = nomina_id,
+                    tipo_descuento_id = descuento_id
                 ))
 
         # Actualizar subsidios si se proporcionan
         if nomina_data.subsidios is not None:
             # Eliminar subsidios existentes
-            db.query(ReporteNominaSubsidio).filter(ReporteNominaSubsidio.reporte_nomina_id == nomina_id).delete()
-            # Agregar nuevos subsidios
-            for subsidio_id in nomina_data.subsidios:
-                db.add(ReporteNominaSubsidio(
-                    reporte_nomina_id=nomina_id,
-                    tipo_subsidio_id=subsidio_id
-                ))
+            db.query(ReporteNominaSubsidio).filter(
+                ReporteNominaSubsidio.reporte_nomina_id == nomina_id
+            ).delete()
+            # Agregar nuevos subsidios si no esta vacio
+            if nomina_data.subsidios:
+                for subsidio_id in nomina_data.subsidios:
+                    db.add(ReporteNominaSubsidio(
+                        reporte_nomina_id = nomina_id,
+                        tipo_subsidio_id = subsidio_id
+                    ))
 
         db.commit()
         db.refresh(db_nomina)
