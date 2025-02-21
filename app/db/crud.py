@@ -1,11 +1,12 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, delete
 from .models import ReporteNomina, QuincenaValor, ReporteNominaRecargo, ReporteNominaDescuento, ReporteNominaSubsidio
 from .schemas import ReporteNominaCreate, ReporteNominaUpdate
 from fastapi import HTTPException
 from uuid import UUID
 
-def crear_reporte_nomina(db: Session, nomina_data: ReporteNominaCreate):
-    """Crea un reporte de nómina y sus registros relacionados en una transacción."""
+async def crear_reporte_nomina(db: AsyncSession, nomina_data: ReporteNominaCreate):
+    """Crea un reporte de nómina y sus registros relacionados en una transacción de forma asíncrona."""
     try:
         nueva_nomina = ReporteNomina(
             empleado_id = nomina_data.empleado_id,
@@ -14,9 +15,9 @@ def crear_reporte_nomina(db: Session, nomina_data: ReporteNominaCreate):
             total_pagado = nomina_data.total_pagado
         )
         db.add(nueva_nomina)
-        db.flush()
+        await db.flush()
 
-        # Agregar quincena_valores
+        # Agregar valores de quincena
         for valor in nomina_data.quincena_valores:
             db.add(QuincenaValor(
                 reporte_nomina_id = nueva_nomina.id,
@@ -25,21 +26,21 @@ def crear_reporte_nomina(db: Session, nomina_data: ReporteNominaCreate):
                 valor_quincena = valor.valor_quincena
             ))
         
-        # Agregar recargos
+        # Agregar los recargos
         for recargo_id in nomina_data.recargos:
             db.add(ReporteNominaRecargo(
                 reporte_nomina_id = nueva_nomina.id,
                 tipo_recargo_id = recargo_id
             ))
 
-        # Agregar descuentos
+        # Agregar los descuentos
         for descuento_id in nomina_data.descuentos:
             db.add(ReporteNominaDescuento(
                 reporte_nomina_id = nueva_nomina.id,
                 tipo_descuento_id = descuento_id
             ))
 
-        # Agregar subsidios solo si existen
+        # Agregar los subsidios si existen
         if nomina_data.subsidios:
             for subsidio_id in nomina_data.subsidios:
                 db.add(ReporteNominaSubsidio(
@@ -47,19 +48,22 @@ def crear_reporte_nomina(db: Session, nomina_data: ReporteNominaCreate):
                     tipo_subsidio_id = subsidio_id
                 ))
 
-        db.commit()
-        db.refresh(nueva_nomina)
+        await db.commit()
+        await db.refresh(nueva_nomina)
         return nueva_nomina
 
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         raise e
 
-def actualizar_reporte_nomina(db: Session, nomina_id: UUID, nomina_data: ReporteNominaUpdate):
-    """Actualiza un reporte de nómina y sus registros relacionados en una transacción."""
+async def actualizar_reporte_nomina(db: AsyncSession, nomina_id: UUID, nomina_data: ReporteNominaUpdate):
+    """Actualiza un reporte de nómina y sus registros relacionados en una transacción de forma asíncrona."""
     try:
         # Obtener la nómina existente
-        db_nomina = db.query(ReporteNomina).filter(ReporteNomina.id == nomina_id).first()
+        result = await db.execute(
+            select(ReporteNomina).where(ReporteNomina.id == nomina_id)
+        )
+        db_nomina = result.scalar_one_or_none()
         if not db_nomina:
             raise HTTPException(status_code=404, detail="Nómina no encontrada")
 
@@ -73,81 +77,82 @@ def actualizar_reporte_nomina(db: Session, nomina_id: UUID, nomina_data: Reporte
 
         # Actualizar quincena_valores si se proporcionan
         if nomina_data.quincena_valores is not None:
-            # Eliminar valores existentes
-            db.query(QuincenaValor).filter(QuincenaValor.reporte_nomina_id == nomina_id).delete()
-            # Agregar nuevos valores
+            await db.execute(
+                delete(QuincenaValor).where(QuincenaValor.reporte_nomina_id == nomina_id)
+            )
             for valor in nomina_data.quincena_valores:
                 db.add(QuincenaValor(
-                    reporte_nomina_id = nomina_id,
-                    tipo_recargo_id = valor.tipo_recargo_id,
-                    cantidad_dias = valor.cantidad_dias,
-                    valor_quincena = valor.valor_quincena
+                    reporte_nomina_id=nomina_id,
+                    tipo_recargo_id=valor.tipo_recargo_id,
+                    cantidad_dias=valor.cantidad_dias,
+                    valor_quincena=valor.valor_quincena
                 ))
 
         # Actualizar recargos si se proporcionan
         if nomina_data.recargos is not None:
-            # Eliminar recargos existentes
-            db.query(ReporteNominaRecargo).filter(ReporteNominaRecargo.reporte_nomina_id == nomina_id).delete()
-            # Agregar nuevos recargos
+            await db.execute(
+                delete(ReporteNominaRecargo).where(ReporteNominaRecargo.reporte_nomina_id == nomina_id)
+            )
             for recargo_id in nomina_data.recargos:
                 db.add(ReporteNominaRecargo(
-                    reporte_nomina_id = nomina_id,
-                    tipo_recargo_id = recargo_id
+                    reporte_nomina_id=nomina_id,
+                    tipo_recargo_id=recargo_id
                 ))
 
         # Actualizar descuentos si se proporcionan
         if nomina_data.descuentos is not None:
-            # Eliminar descuentos existentes
-            db.query(ReporteNominaDescuento).filter(ReporteNominaDescuento.reporte_nomina_id == nomina_id).delete()
-            # Agregar nuevos descuentos
+            await db.execute(
+                delete(ReporteNominaDescuento).where(ReporteNominaDescuento.reporte_nomina_id == nomina_id)
+            )
             for descuento_id in nomina_data.descuentos:
                 db.add(ReporteNominaDescuento(
-                    reporte_nomina_id = nomina_id,
-                    tipo_descuento_id = descuento_id
+                    reporte_nomina_id=nomina_id,
+                    tipo_descuento_id=descuento_id
                 ))
 
         # Actualizar subsidios si se proporcionan
         if nomina_data.subsidios is not None:
-            # Eliminar subsidios existentes
-            db.query(ReporteNominaSubsidio).filter(
-                ReporteNominaSubsidio.reporte_nomina_id == nomina_id
-            ).delete()
-            # Agregar nuevos subsidios si no esta vacio
+            await db.execute(
+                delete(ReporteNominaSubsidio).where(ReporteNominaSubsidio.reporte_nomina_id == nomina_id)
+            )
             if nomina_data.subsidios:
                 for subsidio_id in nomina_data.subsidios:
                     db.add(ReporteNominaSubsidio(
-                        reporte_nomina_id = nomina_id,
-                        tipo_subsidio_id = subsidio_id
+                        reporte_nomina_id=nomina_id,
+                        tipo_subsidio_id=subsidio_id
                     ))
 
-        db.commit()
-        db.refresh(db_nomina)
+        await db.commit()
+        await db.refresh(db_nomina)
         return db_nomina
 
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         raise e
-    
-def eliminar_reporte_nomina(db: Session, nomina_id: UUID):
-    """Elimina un reporte de nómina y sus registros relacionados en una transacción."""
+
+async def eliminar_reporte_nomina(db: AsyncSession, nomina_id: UUID):
+    """Elimina un reporte de nómina y sus registros relacionados en una transacción de forma asíncrona."""
     try:
         # Obtener la nómina existente
-        db_nomina = db.query(ReporteNomina).filter(ReporteNomina.id == nomina_id).first()
+        result = await db.execute(
+            select(ReporteNomina).where(ReporteNomina.id == nomina_id)
+        )
+        db_nomina = result.scalar_one_or_none()
         if not db_nomina:
             raise HTTPException(status_code=404, detail="Nómina no encontrada")
 
         # Eliminar registros relacionados
-        db.query(QuincenaValor).filter(QuincenaValor.reporte_nomina_id == nomina_id).delete()
-        db.query(ReporteNominaRecargo).filter(ReporteNominaRecargo.reporte_nomina_id == nomina_id).delete()
-        db.query(ReporteNominaDescuento).filter(ReporteNominaDescuento.reporte_nomina_id == nomina_id).delete()
-        db.query(ReporteNominaSubsidio).filter(ReporteNominaSubsidio.reporte_nomina_id == nomina_id).delete()
+        await db.execute(delete(QuincenaValor).where(QuincenaValor.reporte_nomina_id == nomina_id))
+        await db.execute(delete(ReporteNominaRecargo).where(ReporteNominaRecargo.reporte_nomina_id == nomina_id))
+        await db.execute(delete(ReporteNominaDescuento).where(ReporteNominaDescuento.reporte_nomina_id == nomina_id))
+        await db.execute(delete(ReporteNominaSubsidio).where(ReporteNominaSubsidio.reporte_nomina_id == nomina_id))
 
         # Eliminar la nómina
-        db.delete(db_nomina)
-        db.commit()
+        await db.delete(db_nomina)
+        await db.commit()
 
-        return {"message": "Nómina eliminada exitosamente", "nomina": db_nomina}
+        return {"mensaje": "Nómina eliminada exitosamente", "nomina": db_nomina}
 
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         raise e
