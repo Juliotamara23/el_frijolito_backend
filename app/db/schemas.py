@@ -31,12 +31,15 @@ class Empleado(EmpleadoBase):
 # Esquema para la tabla config_salario
 class ConfigSalarioBase(BaseModel):
     año: Annotated[int, Field(gt=0)]  # Validación de formato de año
-    salario_minimo: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    salario_minimo: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
     horas_semana: Annotated[int, Field(ge=0, le=168)]  # Validación de rango (máximo 168 horas en una semana)
     horas_mes: Annotated[int, Field(ge=0, le=744)]  # Validación de rango (máximo 744 horas en un mes)
-    valor_hora: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=True, ge=0)]  # Validación de rango
+    valor_hora: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
 
 class ConfigSalarioCreate(ConfigSalarioBase):
+    pass
+
+class ConfigSalarioUpdate(ConfigSalarioBase):
     pass
 
 class ConfigSalario(ConfigSalarioBase):
