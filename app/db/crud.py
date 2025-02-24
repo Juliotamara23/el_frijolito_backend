@@ -6,47 +6,44 @@ from fastapi import HTTPException
 from uuid import UUID
 
 async def crear_reporte_nomina(db: AsyncSession, nomina_data: ReporteNominaCreate):
-    """Crea un reporte de nómina y sus registros relacionados en una transacción de forma asíncrona."""
+    """Guarda en la base de datos una nómina ya calculada."""
     try:
         nueva_nomina = ReporteNomina(
-            empleado_id = nomina_data.empleado_id,
-            fecha_inicio = nomina_data.fecha_inicio,
-            fecha_fin = nomina_data.fecha_fin,
-            total_pagado = nomina_data.total_pagado
+            empleado_id=nomina_data.empleado_id,
+            fecha_inicio=nomina_data.fecha_inicio,
+            fecha_fin=nomina_data.fecha_fin,
+            total_pagado=nomina_data.total_pagado  # Ya calculado
         )
-        db.add(nueva_nomina)
-        await db.flush()
 
-        # Agregar valores de quincena
+        db.add(nueva_nomina)
+        await db.flush()  # Asegurar que tiene ID antes de relacionar otros datos
+
+        # Guardar detalles de quincena, recargos, descuentos y subsidios
         for valor in nomina_data.quincena_valores:
             db.add(QuincenaValor(
-                reporte_nomina_id = nueva_nomina.id,
-                tipo_recargo_id = valor.tipo_recargo_id,
-                cantidad_dias = valor.cantidad_dias,
-                valor_quincena = valor.valor_quincena
+                reporte_nomina_id=nueva_nomina.id,
+                tipo_recargo_id=valor.tipo_recargo_id,
+                cantidad_dias=valor.cantidad_dias,
+                valor_quincena=valor.valor_quincena
             ))
-        
-        # Agregar los recargos
+
         for recargo_id in nomina_data.recargos:
             db.add(ReporteNominaRecargo(
-                reporte_nomina_id = nueva_nomina.id,
-                tipo_recargo_id = recargo_id
+                reporte_nomina_id=nueva_nomina.id,
+                tipo_recargo_id=recargo_id
             ))
 
-        # Agregar los descuentos
         for descuento_id in nomina_data.descuentos:
             db.add(ReporteNominaDescuento(
-                reporte_nomina_id = nueva_nomina.id,
-                tipo_descuento_id = descuento_id
+                reporte_nomina_id=nueva_nomina.id,
+                tipo_descuento_id=descuento_id
             ))
 
-        # Agregar los subsidios si existen
-        if nomina_data.subsidios:
-            for subsidio_id in nomina_data.subsidios:
-                db.add(ReporteNominaSubsidio(
-                    reporte_nomina_id = nueva_nomina.id,
-                    tipo_subsidio_id = subsidio_id
-                ))
+        for subsidio_id in nomina_data.subsidios:
+            db.add(ReporteNominaSubsidio(
+                reporte_nomina_id=nueva_nomina.id,
+                tipo_subsidio_id=subsidio_id
+            ))
 
         await db.commit()
         await db.refresh(nueva_nomina)

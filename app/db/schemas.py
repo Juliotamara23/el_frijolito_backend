@@ -114,13 +114,14 @@ class ReporteNominaBase(BaseModel):
     empleado_id: UUID
     fecha_inicio: date
     fecha_fin: date
-    total_pagado: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
+    total_pagado: Optional[Decimal] = Decimal('0')  # Validación de rango
 
 class ReporteNominaCreate(ReporteNominaBase):
     quincena_valores: list[QuincenaValorCreate]
     recargos: list[int]
     descuentos: list[int]
     subsidios: Optional[list[int]] = None
+    total_pagado: Optional[Decimal] = Decimal('0')
 
 class ReporteNomina(ReporteNominaBase):
     id: UUID

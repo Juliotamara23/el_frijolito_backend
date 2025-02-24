@@ -5,6 +5,7 @@ from typing import List
 from app.db import models, schemas
 from app.db.database import get_db
 from app.db.crud import crear_reporte_nomina, actualizar_reporte_nomina, eliminar_reporte_nomina
+from app.services.payroll import calcular_nomina
 from uuid import UUID
 
 router = APIRouter()
@@ -29,7 +30,11 @@ async def leer_nomina(nomina_id: UUID, db: AsyncSession = Depends(get_db)):
 # Ruta para crear una nómina
 @router.post("/", status_code=201, response_model=schemas.ReporteNomina)
 async def crear_nomina(nomina: schemas.ReporteNominaCreate, db: AsyncSession = Depends(get_db)):
-    return await crear_reporte_nomina(db, nomina)
+    """Calcula y crea una nueva nómina"""
+    # Calcular la nómina
+    nomina_calculada = await calcular_nomina(db, nomina)
+    # Guardar en base de datos
+    return await crear_reporte_nomina(db, nomina_calculada)
 
 # Ruta para actualizar una nómina
 @router.put("/{nomina_id}", response_model=schemas.ReporteNomina)
