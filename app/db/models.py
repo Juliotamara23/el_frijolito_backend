@@ -29,6 +29,7 @@ class ConfigSalario(Base):
     horas_semana = Column(Integer, nullable=False)
     horas_mes = Column(Integer, nullable=False)
     valor_hora = Column(Numeric(10, 2), nullable=False)
+    horas_salario = Column(Numeric(10, 2), nullable=False)
 
 # Modelo de tipo de recargos
 class TipoRecargo(Base):

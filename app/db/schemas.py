@@ -32,6 +32,7 @@ class ConfigSalarioBase(BaseModel):
     horas_semana: Annotated[int, Field(ge=0, le=168)]  # Validación de rango (máximo 168 horas en una semana)
     horas_mes: Annotated[int, Field(ge=0, le=744)]  # Validación de rango (máximo 744 horas en un mes)
     valor_hora: Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]  # Validación de rango
+    horas_salario: Annotated[int, Field(ge=0, le=168)]  # Validación de rango (máximo 8 horas diarias)
 
 class ConfigSalarioCreate(ConfigSalarioBase):
     pass
