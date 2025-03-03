@@ -116,6 +116,25 @@ class ReporteNominaBase(BaseModel):
     fecha_fin: date
     total_pagado: Optional[Decimal] = Decimal('0')  # Validación de rango
 
+class ReporteNominaResponse(BaseModel):
+    id: UUID
+    empleado_id: UUID
+    cedula: str
+    nombres: str
+    apellidos: str
+    telefono: str
+    puesto_trabajo: str
+    fecha_inicio: date
+    fecha_fin: date
+    descuentos_aplicados: Optional[str]
+    subsidios_aplicados: Optional[str]
+    recargos_horas: Optional[str]
+    valor_quincena: Optional[str]
+    total_pagado: Decimal
+
+    class Config:
+        from_attributes = True
+
 class ReporteNominaCreate(ReporteNominaBase):
     quincena_valores: list[QuincenaValorCreate]
     recargos: list[int]
