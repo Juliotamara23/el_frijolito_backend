@@ -6,23 +6,21 @@ from app.db import models, schemas
 from app.db.database import get_db
 from app.db.crud import crear_reporte_nomina, actualizar_reporte_nomina, eliminar_reporte_nomina
 from app.services.payroll import calcular_nomina
+from app.services.reporte_payroll import obtener_reporte_nominas, obtener_reporte_nomina
+from app.db.schemas import ReporteNominaResponse
 from uuid import UUID
 
 router = APIRouter()
 
 # Ruta para leer todas las nóminas
-@router.get("/", response_model=List[schemas.ReporteNomina])
+@router.get("/", response_model=List[ReporteNominaResponse])
 async def leer_nominas(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(models.ReporteNomina))
-    return result.scalars().all()
+    return await obtener_reporte_nominas(db)
 
 # Ruta para leer una nómina por su ID
-@router.get("/{nomina_id}", response_model=schemas.ReporteNomina)
+@router.get("/{nomina_id}", response_model=ReporteNominaResponse)
 async def leer_nomina(nomina_id: UUID, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(
-        select(models.ReporteNomina).where(models.ReporteNomina.id == nomina_id)
-    )
-    nomina = result.scalar_one_or_none()
+    nomina = await obtener_reporte_nomina(db, nomina_id)
     if nomina is None:
         raise HTTPException(status_code=404, detail="Nómina no encontrada")
     return nomina
