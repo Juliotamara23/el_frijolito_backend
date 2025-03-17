@@ -128,9 +128,7 @@ class ReporteNominaResponse(BaseModel):
     fecha_fin: date
     descuentos_aplicados: Optional[str]
     subsidios_aplicados: Optional[str]
-    tipo_recargo: Optional[str]
-    cantidad_dias: Optional[str]
-    valor_quincena: Optional[str]
+    recargos_y_valores: Optional[str]
     total_pagado: Decimal
 
     class Config:
