@@ -191,6 +191,7 @@ class ReporteNominaSubsidio(ReporteNominaSubsidioBase):
 
 # Esquema para actualizar una nómina
 class ReporteNominaUpdate(BaseModel):
+    empleado_id: Optional[UUID] = None
     fecha_inicio: Optional[date] = None
     fecha_fin: Optional[date] = None
     total_pagado: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = None

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
-from .models import ReporteNomina, QuincenaValor, ReporteNominaRecargo, ReporteNominaDescuento, ReporteNominaSubsidio
+from .models import ReporteNomina, QuincenaValor, ReporteNominaRecargo, ReporteNominaDescuento, ReporteNominaSubsidio, Empleado
 from .schemas import ReporteNominaCreate, ReporteNominaUpdate
 from fastapi import HTTPException
 from uuid import UUID
@@ -63,6 +63,16 @@ async def actualizar_reporte_nomina(db: AsyncSession, nomina_id: UUID, nomina_da
         db_nomina = result.scalar_one_or_none()
         if not db_nomina:
             raise HTTPException(status_code=404, detail="Nómina no encontrada")
+        
+        if nomina_data.empleado_id is not None:
+            # Verificar si el empleado existe
+            empleado_result = await db.execute(
+                select(Empleado).where(Empleado.id == nomina_data.empleado_id)
+            )
+            empleado = empleado_result.scalar_one_or_none()
+            if not empleado:
+                raise HTTPException(status_code=404, detail="Empleado no encontrado")
+            db_nomina.empleado_id = nomina_data.empleado_id
 
         # Actualizar campos básicos si se proporcionan
         if nomina_data.fecha_inicio is not None:

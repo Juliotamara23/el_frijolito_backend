@@ -1,4 +1,4 @@
-# <h1 align="center">Backend del sistema de nominas El frijolito</h1>
+# <h1 align="center">Backend del sistema de nominas El Frijolito</h1>
 
 ![El frijotilo](public/el_frijolito.png)
 

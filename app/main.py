@@ -23,4 +23,4 @@ app.include_router(api_router)
 
 @app.get("/")
 def read_root(db: Session = Depends(get_db)):
-    return {"message": "Bienvenido a la API de Nómina Tu Casa Ya"}
+    return {"message": "Bienvenido a la API del restaurante el frijolito"}
