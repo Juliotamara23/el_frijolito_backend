@@ -97,7 +97,7 @@ class TipoDescuento(TipoDescuentoBase):
 class QuincenaValorBase(BaseModel):
     tipo_recargo_id: int
     cantidad_dias: Annotated[int, conint(ge=0, le=31)]  # Validación de rango (máximo 31 días en un mes)
-    valor_quincena: Annotated[Decimal, condecimal(max_digits=10, decimal_places=2), Field(strict=False, ge=0)]  # Validación de rango
+    valor_quincena: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = None  # Validación de rango
 
 class QuincenaValorCreate(QuincenaValorBase):
     pass
