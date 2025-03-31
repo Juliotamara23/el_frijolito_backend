@@ -1,5 +1,5 @@
 from pydantic import BaseModel, condecimal, Field, constr, conint
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
 from decimal import Decimal
 from datetime import date
 from uuid import UUID
@@ -189,16 +189,30 @@ class ReporteNominaSubsidio(ReporteNominaSubsidioBase):
     class Config:
         from_attributes: True
 
+# Esquema para el formulario de actulización de nomina
+class ReporteNominaUpdateForm(BaseModel):
+    empleado_id: UUID
+    cedula: str
+    nombres: str
+    apellidos: str
+    fecha_inicio: date
+    fecha_fin: date
+    quincena_valores: list[QuincenaValorCreate]
+    recargos: Optional[list[int]] = None
+    descuentos: Optional[list[int]] = None
+    subsidios: Optional[list[int]] = None
+    total_pagado: Optional[Decimal] = Decimal('0')
+
+    class Config:
+        from_attributes = True
+
 # Esquema para actualizar una nómina
-class ReporteNominaUpdate(BaseModel):
-    empleado_id: Optional[UUID] = None
-    fecha_inicio: Optional[date] = None
-    fecha_fin: Optional[date] = None
-    total_pagado: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = None
+class ReporteNominaUpdate(ReporteNominaBase):
     quincena_valores: Optional[list[QuincenaValorCreate]] = None
     recargos: Optional[list[int]] = None
     descuentos: Optional[list[int]] = None
     subsidios: Optional[list[int]] = None
+    total_pagado: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = Decimal('0')
 
     class Config:
         from_attributes = True
