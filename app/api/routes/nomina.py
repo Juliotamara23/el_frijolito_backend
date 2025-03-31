@@ -7,7 +7,7 @@ from app.db.database import get_db
 from app.db.crud import crear_reporte_nomina, actualizar_reporte_nomina, eliminar_reporte_nomina
 from app.services.payroll import calcular_nomina
 from app.services.reporte_payroll import obtener_reporte_nominas, obtener_reporte_nomina
-from app.db.schemas import ReporteNominaResponse
+from app.db.schemas import ReporteNominaResponse, ReporteNominaUpdateForm
 from uuid import UUID
 
 router = APIRouter()
@@ -18,7 +18,7 @@ async def leer_nominas(db: AsyncSession = Depends(get_db)):
     return await obtener_reporte_nominas(db)
 
 # Ruta para leer una nómina por su ID
-@router.get("/{nomina_id}", response_model=ReporteNominaResponse)
+@router.get("/{nomina_id}", response_model=ReporteNominaUpdateForm)
 async def leer_nomina(nomina_id: UUID, db: AsyncSession = Depends(get_db)):
     nomina = await obtener_reporte_nomina(db, nomina_id)
     if nomina is None:

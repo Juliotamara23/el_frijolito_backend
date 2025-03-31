@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -110,9 +110,19 @@ async def actualizar_reporte_nomina(db: AsyncSession, nomina_id: UUID, nomina_da
                         quincena_existente[tipo_recargo_id].cantidad_dias != qv.cantidad_dias or
                         quincena_existente[tipo_recargo_id].valor_quincena != qv.valor_quincena
                     ):
-                        quincena_existente[tipo_recargo_id].cantidad_dias = qv.cantidad_dias
-                        quincena_existente[tipo_recargo_id].valor_quincena = qv.valor_quincena
-                        actualizar.append(quincena_existente[tipo_recargo_id])
+                        # Actualizar individualmente cada registro
+                        await db.execute(
+                            update(QuincenaValor)
+                            .where(
+                                QuincenaValor.reporte_nomina_id == nomina_id,
+                                QuincenaValor.tipo_recargo_id == tipo_recargo_id
+                            )
+                            .values(
+                                cantidad_dias=qv.cantidad_dias,
+                                valor_quincena=qv.valor_quincena
+                            )
+                        )
+                        cambios = True
                 else:
                     agregar.append(QuincenaValor(
                         reporte_nomina_id=nomina_id,
@@ -121,10 +131,7 @@ async def actualizar_reporte_nomina(db: AsyncSession, nomina_id: UUID, nomina_da
                         valor_quincena=qv.valor_quincena
                     ))
 
-            # Aplicar cambios
-            if actualizar:
-                await db.bulk_update_mappings(QuincenaValor, [qv.__dict__ for qv in actualizar])
-                cambios = True
+            # Agregar nuevos registros
             if agregar:
                 db.add_all(agregar)
                 cambios = True
