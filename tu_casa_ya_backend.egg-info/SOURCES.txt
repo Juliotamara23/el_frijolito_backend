@@ -1,6 +1,0 @@
-README.md
-setup.py
-tu_casa_ya_backend.egg-info/PKG-INFO
-tu_casa_ya_backend.egg-info/SOURCES.txt
-tu_casa_ya_backend.egg-info/dependency_links.txt
-tu_casa_ya_backend.egg-info/top_level.txt
