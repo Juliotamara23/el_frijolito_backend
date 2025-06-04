@@ -1,6 +1,6 @@
-# <h1 align="center">Backend del sistema de nomina Tu Casa Ya</h1>
+# <h1 align="center">Backend del sistema de nominas El Frijolito</h1>
 
-![Tu Casa Ya](Home.png)
+![El frijotilo](public/el_frijolito.png)
 
 ---
 
@@ -14,7 +14,7 @@
 
 ## Índice  
 
-* [Título e imagen de portada](#Backend-del-sistema-de-nomina-Tu-Casa-Ya)
+* [Título e imagen de portada](#Backend-del-sistema-de-nomina-El-frijolito)
 * [Índice](#índice)  
 * [Descripción del proyecto](#descripción-del-proyecto)  
 * [Estado del proyecto](#estado-del-proyecto)  
@@ -24,9 +24,7 @@
 ---
 
 ## Descripción del proyecto  
-El backend del sistema de nómina de la empresa de casas prefabricadas **Tu Casa Ya** está diseñado para gestionar de manera eficiente y precisa todos los aspectos relacionados con la nómina de los empleados. Este sistema incluye configuraciones detalladas del modelo de base de datos, lógica para el cálculo de la nómina y una serie de endpoints de API que permiten la integración y el acceso a los datos de manera segura y eficiente.
-
-El objetivo principal del proyecto es proporcionar una solución robusta y escalable que facilite la administración de la nómina, garantizando precisión en los cálculos y facilidad de uso para los administradores del sistema.
+El backend del sistema de nómina del restaurante El frijolito es un proyecto de software desarrollado en Python utilizando la tecnología de FastAPI. El objetivo del proyecto es crear una API RESTful que permita a los usuarios registrar empleados, calcular la nómina de los empleados y visualizar informes detallados de las nóminas por empleado.
 
 ---
 

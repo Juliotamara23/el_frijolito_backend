@@ -5,12 +5,13 @@ api/__pycache__/
 core/__pycache__/
 db/__pycache__/
 alembic/__pycache__/
-errores.txt
-migrationDB.txt
+tu_casa_ya_backend.egg-info/
 
 # Archivos de configuración local
 .env
-alembic.ini  # Si no quieres compartir la configuración de Alembic
+alembic.ini
+migrationDB.txt
+errores.txt
 
 # Entornos virtuales
 venv/  # Si tienes un entorno virtual

@@ -21,7 +21,7 @@ class Empleado(Base):
 
 # Modelo de configuración de salario
 class ConfigSalario(Base):
-    __tablename__ = 'config_salario'
+    __tablename__ = 'config_salarios'
 
     id = Column(Integer, primary_key=True, index=True)
     año = Column(String, unique=True, nullable=False)
@@ -29,10 +29,11 @@ class ConfigSalario(Base):
     horas_semana = Column(Integer, nullable=False)
     horas_mes = Column(Integer, nullable=False)
     valor_hora = Column(Numeric(10, 2), nullable=False)
+    horas_salario = Column(Numeric(10, 2), nullable=False)
 
 # Modelo de tipo de recargos
 class TipoRecargo(Base):
-    __tablename__ = 'tipo_recargos'
+    __tablename__ = 'tipos_recargos'
 
     id = Column(Integer, primary_key=True, index=True)
     tipo_hora = Column(String, unique=True, nullable=False)
@@ -45,7 +46,7 @@ class TipoRecargo(Base):
 
 # Modelo de subsidios
 class TipoSubsidio(Base):
-    __tablename__ = 'tipo_subsidios'
+    __tablename__ = 'tipos_subsidios'
 
     id = Column(Integer, primary_key=True, index=True)
     tipo = Column(String, unique=True, nullable=False)
@@ -55,7 +56,7 @@ class TipoSubsidio(Base):
 
 # Modelo de descuentos
 class TipoDescuento(Base):
-    __tablename__ = 'tipo_descuentos'
+    __tablename__ = 'tipos_descuentos'
 
     id = Column(Integer, primary_key=True, index=True)
     tipo = Column(String, unique=True, nullable=False)
@@ -65,7 +66,7 @@ class TipoDescuento(Base):
 
 # Modelo de Nomina
 class ReporteNomina(Base):
-    __tablename__ = 'reporte_nominas'
+    __tablename__ = 'reportes_nominas'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     empleado_id = Column(UUID(as_uuid=True), ForeignKey('empleados.id'), nullable=False)
@@ -84,8 +85,8 @@ class QuincenaValor(Base):
     __tablename__ = 'quincena_valores'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reporte_nominas.id'), nullable=False)
-    tipo_recargo_id = Column(Integer, ForeignKey('tipo_recargos.id'), nullable=False)
+    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reportes_nominas.id'), nullable=False)
+    tipo_recargo_id = Column(Integer, ForeignKey('tipos_recargos.id'), nullable=False)
     cantidad_dias = Column(Integer, nullable=False)
     valor_quincena = Column(Numeric(10, 2), nullable=False)
 
@@ -94,33 +95,33 @@ class QuincenaValor(Base):
 
 # Modelo de reporte nomina recargos
 class ReporteNominaRecargo(Base):
-    __tablename__ = 'reporte_nomina_recargos'
+    __tablename__ = 'reportes_nominas_recargos'
 
     id = Column(Integer, primary_key=True, index=True)
-    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reporte_nominas.id'), nullable=False)
-    tipo_recargo_id = Column(Integer, ForeignKey('tipo_recargos.id'), nullable=False)
+    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reportes_nominas.id'), nullable=False)
+    tipo_recargo_id = Column(Integer, ForeignKey('tipos_recargos.id'), nullable=False)
     
     reporte_nomina = relationship("ReporteNomina", back_populates="reporte_nomina_recargos")
     tipo_recargo = relationship("TipoRecargo", back_populates="reporte_nomina_recargos")
 
 # Modelo de reporte nomina descuentos
 class ReporteNominaDescuento(Base):
-    __tablename__ = 'reporte_nomina_descuentos'
+    __tablename__ = 'reportes_nominas_descuentos'
 
     id = Column(Integer , primary_key=True, index=True)
-    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reporte_nominas.id'), nullable=False)
-    tipo_descuento_id = Column(Integer, ForeignKey('tipo_descuentos.id'), nullable=False)
+    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reportes_nominas.id'), nullable=False)
+    tipo_descuento_id = Column(Integer, ForeignKey('tipos_descuentos.id'), nullable=False)
 
     reporte_nomina = relationship("ReporteNomina", back_populates="reporte_nomina_descuentos")
     tipo_descuento = relationship("TipoDescuento", back_populates="reporte_nomina_descuentos")
 
 # Modelo de reporte nomina subsidios
 class ReporteNominaSubsidio(Base):
-    __tablename__ = 'reporte_nomina_subsidios'
+    __tablename__ = 'reportes_nominas_subsidios'
 
     id = Column(Integer, primary_key=True, index=True)
-    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reporte_nominas.id'), nullable=False)
-    tipo_subsidio_id = Column(Integer, ForeignKey('tipo_subsidios.id'), nullable=False)
+    reporte_nomina_id = Column(UUID(as_uuid=True), ForeignKey('reportes_nominas.id'), nullable=False)
+    tipo_subsidio_id = Column(Integer, ForeignKey('tipos_subsidios.id'), nullable=False)
 
     reporte_nomina = relationship("ReporteNomina", back_populates="reporte_nomina_subsidios")
     tipo_subsidio = relationship("TipoSubsidio", back_populates="reporte_nomina_subsidios")
