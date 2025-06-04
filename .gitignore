@@ -5,6 +5,8 @@ api/__pycache__/
 core/__pycache__/
 db/__pycache__/
 alembic/__pycache__/
+errores.txt
+migrationDB.txt
 
 # Archivos de configuración local
 .env
