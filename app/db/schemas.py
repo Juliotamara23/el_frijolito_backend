@@ -23,7 +23,7 @@ class Empleado(EmpleadoBase):
     id: UUID
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla config_salario
 class ConfigSalarioBase(BaseModel):
@@ -44,7 +44,7 @@ class ConfigSalario(ConfigSalarioBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla tipo_recargos
 class TipoRecargoBase(BaseModel):
@@ -60,7 +60,7 @@ class TipoRecargo(TipoRecargoBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla tipo_subsidios
 class TipoSubsidioBase(BaseModel):
@@ -74,7 +74,7 @@ class TipoSubsidio(TipoSubsidioBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla tipo_descuentos
 class TipoDescuentoBase(BaseModel):
@@ -91,7 +91,7 @@ class TipoDescuento(TipoDescuentoBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla quincena_valores
 class QuincenaValorBase(BaseModel):
@@ -107,7 +107,7 @@ class QuincenaValor(QuincenaValorBase):
     reporte_nomina_id: UUID
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla reporte_nomina
 class ReporteNominaBase(BaseModel):
@@ -132,7 +132,7 @@ class ReporteNominaResponse(BaseModel):
     total_pagado: Decimal
 
     class Config:
-        from_attributes = True
+        from_attributes  = True
 
 class ReporteNominaCreate(ReporteNominaBase):
     quincena_valores: list[QuincenaValorCreate]
@@ -145,7 +145,7 @@ class ReporteNomina(ReporteNominaBase):
     id: UUID
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla reporte_nomina_recargos
 class ReporteNominaRecargoBase(BaseModel):
@@ -159,7 +159,7 @@ class ReporteNominaRecargo(ReporteNominaRecargoBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla reporte_nomina_descuentos
 class ReporteNominaDescuentoBase(BaseModel):
@@ -173,7 +173,7 @@ class ReporteNominaDescuento(ReporteNominaDescuentoBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para la tabla reporte_nomina_subsidios
 class ReporteNominaSubsidioBase(BaseModel):
@@ -187,7 +187,7 @@ class ReporteNominaSubsidio(ReporteNominaSubsidioBase):
     id: int
 
     class Config:
-        from_attributes: True
+        from_attributes = True
 
 # Esquema para el formulario de actulización de nomina
 class ReporteNominaUpdateForm(BaseModel):
@@ -204,7 +204,7 @@ class ReporteNominaUpdateForm(BaseModel):
     total_pagado: Optional[Decimal] = Decimal('0')
 
     class Config:
-        from_attributes = True
+        from_attributes  = True
 
 # Esquema para actualizar una nómina
 class ReporteNominaUpdate(ReporteNominaBase):
@@ -215,11 +215,11 @@ class ReporteNominaUpdate(ReporteNominaBase):
     total_pagado: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, strict=False, ge=0)]] = Decimal('0')
 
     class Config:
-        from_attributes = True
+        from_attributes  = True
 
 # Esquema para eliminar una nómina
 class ReporteNominaDelete(BaseModel):
     id: UUID
 
     class Config:
-        from_attributes = True
+        from_attributes  = True
