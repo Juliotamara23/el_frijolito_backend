@@ -1,5 +1,4 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import MetaData
 from dotenv import dotenv_values
@@ -40,7 +39,7 @@ async def create_tables_orm(engine):
 def get_session():
     # Configurar sesión asíncrona
     engine = create_async_engine(DATABASE_URL)
-    AsyncSessionLocal = sessionmaker(
+    AsyncSessionLocal = AsyncSession(
         engine, class_=AsyncSession, expire_on_commit=False
     )
     return AsyncSessionLocal
