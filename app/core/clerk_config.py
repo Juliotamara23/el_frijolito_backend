@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from clerk_sdk.clerk import Clerk
-from clerk_sdk.resources.users import Users
+from clerk_backend_api import Clerk
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
